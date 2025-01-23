@@ -4,19 +4,13 @@ project(hello_world VERSION 0.1
         DESCRIPTION "Hello world")
 enable_language(Fortran)
 
-# Currently setting the Fortran compiler to use -std=gnu, change this if you
-# want a specific standard
-set(CMAKE_Fortran_FLAGS "-g -stand f2018 -warn all,errors")
+set(CMAKE_Fortran_FLAGS "-g2 -stand f2018 -warn all,errors")
 set(CMAKE_Fortran_COMPILER "ifx")
 set(CMAKE_INSTALL_PREFIX "./")
 
-# Source code
-set(MY_MODULES
-        src/hello.f90
-        src/world.f90)
-add_library(hello_world_lib "${MY_MODULES}")
+add_subdirectory(src/hello_world)
 add_executable(hello_world src/hello_world.f90)
-target_link_libraries(hello_world PRIVATE hello_world_lib)
+target_link_libraries(hello_world PUBLIC hello_world_lib)
 
 enable_testing()
 set(TEST_LIST
@@ -30,7 +24,7 @@ set(CMAKE_Fortran_FLAGS "-nofor-main")
 
 create_test_sourcelist(_ my_tests_main.c ${TEST_LIST})
 add_executable(my_tests my_tests_main.c test/my_tests.f90)
-target_link_libraries(my_tests hello_world_lib)
+target_link_libraries(my_tests PUBLIC hello_world_lib)
 
 foreach (test ${TEST_LIST})
     add_test(NAME ${test} COMMAND my_tests ${test})
