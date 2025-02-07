@@ -11,7 +11,7 @@ endif ()
 set(
         tests
         "suite1"
-        #"suite2"
+        "tsunami"
 )
 set(
         test-srcs
@@ -31,8 +31,11 @@ target_link_libraries(
         PRIVATE
         "${PROJECT_NAME}-lib"
         "ode-lib"
+        "tsunami-lib"
         "test-drive::test-drive"
 )
+
+target_include_directories("${PROJECT_NAME}-tester" INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
 foreach (t IN LISTS tests)
     add_test("${PROJECT_NAME}/${t}" "${PROJECT_NAME}-tester" "${t}")

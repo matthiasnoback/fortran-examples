@@ -3,5 +3,7 @@ add_library(ode-lib STATIC
         some_ode.f90
 )
 
+target_link_libraries(ode-lib PUBLIC common-lib)
+
 # Allows main project to find .mod files for used modules
 target_include_directories(ode-lib INTERFACE ${CMAKE_CURRENT_BINARY_DIR})

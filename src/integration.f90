@@ -2,55 +2,51 @@ program integration
     use integration_library, only : integrate_trapezoid
     use iso_fortran_env, only : error_unit
     use functions, only : my_function
+    use precision, only : dp
 
-    character(len = 100) :: task_name
-    type(my_function) :: the_function = my_function(2.0, 3.0)
+    implicit none
 
-    real :: xmin = 0.0
-    real :: xmax = 1.0
+    type(my_function) :: the_function = my_function(2.0_dp, 3.0_dp)
+
+    real(kind = dp) :: xmin = 0.0_dp
+    real(kind = dp) :: xmax = 1.0_dp
 
     integer :: steps = 10
-    real :: integration_result
 
-    call get_task_cli_argument(task_name, 'integrate')
-
-    write(error_unit, *) "Requested task: " // task_name
-
-    if (task_name == 'plot') then
+    select case (get_task_cli_argument('integrate'))
+    case('integrate')
+        print *, integrate_trapezoid(the_function, xmin, xmax, steps)
+    case('plot')
         call plot_function(the_function, xmin, xmax, steps)
-    elseif (task_name == 'integrate') then
-        call integrate_trapezoid(the_function, xmin, xmax, steps, integration_result)
-
-        print *, integration_result
-    else
-        error stop "Unknown task name: " // task_name
-    end if
+    case default
+        error stop "Unknown task"
+    end select
 
 contains
-    subroutine get_task_cli_argument(task_name, default_task)
-        character(len = *), intent(out) :: task_name
+    function get_task_cli_argument(default_task) result (res)
         character(len = *), intent(in) :: default_task
+        character(len = 100) :: res
         integer :: status
         integer :: length
 
-        call get_command_argument(1, task_name, length, status)
+        call get_command_argument(1, res, length, status)
 
         if (status > 0) then
-            task_name = default_task
+            res = default_task
         end if
 
-        task_name = trim(task_name)
-    end subroutine get_task_cli_argument
+        res = trim(res)
+    end function get_task_cli_argument
 
     subroutine plot_function(params, xmin, xmax, steps)
         type(my_function), intent(in) :: params
-        real, intent(in) :: xmin
-        real, intent(in) :: xmax
+        real(kind = dp), intent(in) :: xmin
+        real(kind = dp), intent(in) :: xmax
         integer, intent(in) :: steps
 
         integer :: i
-        real :: delta_x
-        real :: x
+        real(kind = dp) :: delta_x
+        real(kind = dp) :: x
 
         if (steps <= 0) then
             return
