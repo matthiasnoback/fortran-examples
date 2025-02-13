@@ -1,6 +1,6 @@
 module test_tsunami
     use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed
-    use m_diff, only : diff
+    use m_diff, only : diff_upwind
     use precision, only : dp
     implicit none
     private
@@ -37,12 +37,12 @@ contains
 
     end subroutine collect_tsunami_tests
 
-    subroutine test_diff(error)
+    subroutine test_diff_upwind(error)
         type(error_type), allocatable, intent(out) :: error
 
         call check_1d_arrays_are_equal([-3.0_dp, 1.0_dp, 2.0_dp], &
-                diff([1.0_dp, 2.0_dp, 4.0_dp]), error)
-    end subroutine test_diff
+                diff_upwind([1.0_dp, 2.0_dp, 4.0_dp]), error)
+    end subroutine test_diff_upwind
 
     subroutine test_check_empty_1d_arrays_are_equal(error)
         type(error_type), allocatable, intent(out) :: error
