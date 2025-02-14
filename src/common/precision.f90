@@ -1,8 +1,8 @@
 module precision
-    use iso_fortran_env, only : real64
-    implicit none
-    private
-    public :: dp
+   use iso_fortran_env, only: real64
+   implicit none
+   private
+   public :: dp
 
-    integer, parameter :: dp = real64
+   integer, parameter :: dp = real64
 end module precision

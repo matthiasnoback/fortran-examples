@@ -1,2 +1,3 @@
 matplotlib
 fortitude-lint
+fortls

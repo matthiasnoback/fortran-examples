@@ -1,0 +1,8 @@
+{
+    "fortran.linter.compiler": "ifx",
+    "fortran.linter.includePaths": [
+        "./src/**",
+        "./test/**"
+    ],
+    "fortran.linter.modOutput": "./build/mod"
+}
