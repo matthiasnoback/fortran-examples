@@ -2,8 +2,9 @@
 cmake-build-*
 
 # VS Code 
-# - Default CMake build directory
+# - Default CMake build directories
 /build/
+/out/
 # - 
 
 # Python virtual environment

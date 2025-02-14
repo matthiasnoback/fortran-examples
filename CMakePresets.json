@@ -1,0 +1,11 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "ifx",
+            "cacheVariables": {
+                "CMAKE_GENERATOR_TOOLSET": "fortran=ifx"
+            }
+        }
+    ]
+}

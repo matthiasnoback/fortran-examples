@@ -27,11 +27,7 @@ Open the `Extensions` panel on the left (or press `Ctrl + Shift + X`). Then inst
 - Python
 - Trigger Task on Save
 
-To select the `ifx` compiler instead of `ifort`, go to `File` - `Preferences` - `Settings` - `Extensions` - `Cmake Tools` and find the setting `Cmake: Configure Args`. Add an item:
-
-```
--T fortran=ifx
-```
+CMake Tools may ask for a "CMake configure preset". Pick "ifx". In case you picked the wrong one or ever need to manually select it: press `Ctrl + Shift + P` to find a command, and look for the command: "CMake: Select configure preset".
 
 The Modern Fortran extension requires the `fortls` language server, which comes installed with this project as a Python executable. Go to `File` - `Preferences` - `Settings` - `Extensions` - `Modern Fortran` - `Language server`. Make sure to select the `User` tab, not the `Workspace` tab. Then for the setting `Fortran > Fortls: Path` provide the full path to `fortls.exe`, e.g.
 
@@ -39,7 +35,7 @@ The Modern Fortran extension requires the `fortls` language server, which comes 
 C:\Users\[location of the repository]\venv\Scripts\fortls.exe
 ```
 
-(Unfortunately it doesn't work with relative paths)
+(Unfortunately it doesn't work with a relative path)
 
 ## Building, running, debugging
 

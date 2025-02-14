@@ -66,6 +66,5 @@ if (NOT Python_FOUND)
 endif()
 
 execute_process(COMMAND ${Python_EXECUTABLE} -m venv ${PROJECT_SOURCE_DIR}/venv)
-# Find again, but now in venv
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install --upgrade pip)
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install -r ${PROJECT_SOURCE_DIR}/requirements.txt)
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install -q --upgrade pip)
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install -q -r ${PROJECT_SOURCE_DIR}/requirements.txt)
