@@ -2,6 +2,10 @@
 
 ## Install
 
+### Cmake
+
+Install CMake [Download here](https://cmake.org/download/)
+
 ### Intel Fortran compiler
 
 You can install Intel OneAPI Fortran Essentials [Download here](https://www.intel.com/content/www/us/en/developer/tools/oneapi/fortran-compiler-download.html) or Visual Studio (which you probably already have installed).
@@ -10,31 +14,42 @@ You can install Intel OneAPI Fortran Essentials [Download here](https://www.inte
 
 [Download here](https://www.python.org/downloads/)
 
-After installing, create a Python virtual environment in the project directory, and install the required dependencies locally:
-
-```bash
-python -m venv venv
-.\venv\Scripts\python.exe -m pip install --upgrade pip
-.\venv\Scripts\python.exe -m pip install -U -r requirements.txt
-```
-
 ### Visual Studio Code
 
-During the workshop we'll work in the Visual Studio Code IDE. Open the `Extensions` panel on the left (or press `Ctrl + Shift + X`). Then install the following extensions:
+During the workshop we'll work in the Visual Studio Code IDE [Download here](https://code.visualstudio.com/download). 
+
+After installing, run it, and open the folder where you've cloned this project to.
+
+Open the `Extensions` panel on the left (or press `Ctrl + Shift + X`). Then install the following extensions:
 
 - Cmake Tools
 - Modern Fortran
 - Python
+- Trigger Task on Save
 
-To select the `ifx` compiler instead of `ifort`, go to File - `Settings` - `Extensions` - `Cmake Tools` and find the setting `Cmake: Configure Args`. Add an item:
+To select the `ifx` compiler instead of `ifort`, go to `File` - `Preferences` - `Settings` - `Extensions` - `Cmake Tools` and find the setting `Cmake: Configure Args`. Add an item:
 
 ```
 -T fortran=ifx
 ```
 
-Now go to the CMake panel on the left and in the `Project outline` panel select from the menu (`...`) `Clean Reconfigure All Projects` and the `Clean Rebuild All Projects`.
+The Modern Fortran extension requires the `fortls` language server, which comes installed with this project as a Python executable. Go to `File` - `Preferences` - `Settings` - `Extensions` - `Modern Fortran` - `Language server`. Make sure to select the `User` tab, not the `Workspace` tab. Then for the setting `Fortran > Fortls: Path` provide the full path to `fortls.exe`, e.g.
 
-## Linter
+```
+C:\Users\[location of the repository]\venv\Scripts\fortls.exe
+```
+
+(Unfortunately it doesn't work with relative paths)
+
+## Building, running, debugging
+
+From the CMake panel (you'll find an icon on the left of the screen), you can select any of the project's targets that you want to build, run, or debug. The menu (`...`) shows specific actions like Reconfiguring, Rebuilding, Cleaning, etc.
+
+## Fortitude linter
+
+If you've installed the "Trigger Task on Save" extension, Fortitude will check the file immediately after saving it. Any issues will be reported in the file itself, but also in the `Problems` panel.
+
+To check all files at once, run inside a terminal:
 
 ```bash
 .\venv\Scripts\fortitude.exe check --fix -- src test

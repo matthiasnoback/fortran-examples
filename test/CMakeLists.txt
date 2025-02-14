@@ -1,3 +1,6 @@
+# Disable deprecation warnings for test-drive package
+set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
+
 include(cmake/find-test-drive)
 
 # Disable testing by default

@@ -4,5 +4,10 @@
         "./src/**",
         "./test/**"
     ],
-    "fortran.linter.modOutput": "./build/mod"
+    "fortran.linter.modOutput": "./build/mod",
+    "triggerTaskOnSave.tasks": {
+        "Fortitude Check": [
+            "*.f90"
+        ]
+    }
 }

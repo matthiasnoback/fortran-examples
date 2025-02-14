@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.30)
 project(hello_world VERSION 0.1
         LANGUAGES Fortran
         DESCRIPTION "Hello world")
-
+        
 add_library(all_compiler_warnings INTERFACE)
 set(intel_fortran_windows_all_warning_flags /stand:f18 /warn:all)
 set(intel_fortran_linux_all_warning_flags -stand f18 "SHELL:-warn all")
@@ -59,3 +59,13 @@ target_link_libraries(tsunami PRIVATE
 )
 
 add_subdirectory(test)
+
+find_package(Python COMPONENTS Interpreter REQUIRED)
+if (NOT Python_FOUND)
+    message(SEND_ERROR "Please install Python")
+endif()
+
+execute_process(COMMAND ${Python_EXECUTABLE} -m venv ${PROJECT_SOURCE_DIR}/venv)
+# Find again, but now in venv
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install --upgrade pip)
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install -r ${PROJECT_SOURCE_DIR}/requirements.txt)
