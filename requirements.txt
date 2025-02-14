@@ -1,3 +1,4 @@
 matplotlib
 fortitude-lint
 fortls
+fprettify

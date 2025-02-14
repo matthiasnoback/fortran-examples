@@ -37,6 +37,13 @@ C:\Users\[location of the repository]\venv\Scripts\fortls.exe
 
 (Unfortunately it doesn't work with a relative path)
 
+The same goes for `fprettify` which is installed as a Python dependency of this project. Go to `File` - `Preferences` - `Settings` - `Extensions` - `Modern Fortran` - `Language server`. Make sure to select the `User` tab, not the `Workspace` tab. Then for the setting `Fortran > Formatter: Path` provide the full path to `fprettify.exe`, e.g.
+
+
+```
+C:\Users\[location of the repository]\venv\Scripts\fprettify.exe
+```
+
 ## Building, running, debugging
 
 From the CMake panel (you'll find an icon on the left of the screen), you can select any of the project's targets that you want to build, run, or debug. The menu (`...`) shows specific actions like Reconfiguring, Rebuilding, Cleaning, etc.

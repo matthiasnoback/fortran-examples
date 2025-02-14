@@ -1,5 +1,6 @@
 # CLion default CMake  build directory
 cmake-build-*
+.idea
 
 # VS Code 
 # - Default CMake build directories

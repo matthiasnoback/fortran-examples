@@ -9,5 +9,9 @@
         "Fortitude Check": [
             "*.f90"
         ]
+    },
+    "files.exclude": {
+        "venv": true,
+        "out": true
     }
 }
