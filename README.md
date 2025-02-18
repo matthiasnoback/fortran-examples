@@ -16,7 +16,7 @@ You can install Intel OneAPI Fortran Essentials [Download here](https://www.inte
 
 ### Visual Studio Code
 
-During the workshop we'll work in the Visual Studio Code IDE [Download here](https://code.visualstudio.com/download). 
+During the workshop we'll work in the Visual Studio Code IDE [Download here](https://code.visualstudio.com/download).
 
 After installing, run it, and open the folder where you've cloned this project to.
 
@@ -26,6 +26,7 @@ Open the `Extensions` panel on the left (or press `Ctrl + Shift + X`). Then inst
 - Modern Fortran
 - Python
 - Trigger Task on Save
+- EditorConfig for VS Code
 
 CMake Tools may ask for a "CMake configure preset". Pick "ifx". In case you picked the wrong one or ever need to manually select it: press `Ctrl + Shift + P` to find a command, and look for the command: "CMake: Select configure preset".
 
@@ -37,12 +38,7 @@ C:\Users\[location of the repository]\venv\Scripts\fortls.exe
 
 (Unfortunately it doesn't work with a relative path)
 
-The same goes for `fprettify` which is installed as a Python dependency of this project. Go to `File` - `Preferences` - `Settings` - `Extensions` - `Modern Fortran` - `Language server`. Make sure to select the `User` tab, not the `Workspace` tab. Then for the setting `Fortran > Formatter: Path` provide the full path to `fprettify.exe`, e.g.
-
-
-```
-C:\Users\[location of the repository]\venv\Scripts\fprettify.exe
-```
+`fprettify` will be executed on save, and to ensure that the Modern Fortran doesn't try to reformat the code too, we disable formatting under `File` - `Preferences` - `Settings` - `Extensions` - `Modern Fortran` - `Formatting`.
 
 ## Building, running, debugging
 

@@ -8,10 +8,14 @@
     "triggerTaskOnSave.tasks": {
         "Fortitude Check": [
             "*.f90"
+        ],
+        "fprettify": [
+            "*.f90"
         ]
     },
-    "files.exclude": {
-        "venv": true,
-        "out": true
-    }
+    "fortran.formatting.formatter": "Disabled",
+    // "files.exclude": {
+    //     "venv": true,
+    //     "out": true
+    // }
 }

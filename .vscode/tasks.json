@@ -36,6 +36,20 @@
                 "reveal": "never",
                 "panel": "shared"
             }
+        },
+        {
+            "label": "fprettify",
+            "type": "shell",
+            "command": "./venv/Scripts/fprettify",
+            "args": [
+                "-c",
+                "${workspaceFolder}/.fprettify.rc",
+                "${file}"
+            ],
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared"
+            }
         }
     ]
 }
