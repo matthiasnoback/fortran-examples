@@ -2,11 +2,11 @@
 cmake-build-*
 .idea
 
-# VS Code 
+# VS Code
 # - Default CMake build directories
 /build/
 /out/
-# - 
+# -
 
 # Python virtual environment
 /venv
@@ -14,6 +14,7 @@ cmake-build-*
 # Generated output
 *.txt
 *.svg
+*.log
 
 # VSCode Modern Fortran extension
 *.i90

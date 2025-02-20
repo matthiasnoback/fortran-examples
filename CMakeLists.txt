@@ -5,8 +5,8 @@ project(hello_world VERSION 0.1
         DESCRIPTION "Hello world")
 
 add_library(all_compiler_warnings INTERFACE)
-set(intel_fortran_windows_all_warning_flags /fpp /stand:f18 /warn:all)
-set(intel_fortran_linux_all_warning_flags -fpp -stand f18 "SHELL:-warn all")
+set(intel_fortran_windows_all_warning_flags /fpp /stand:f18 "SHELL:/warn:all$<COMMA>errors$<COMMA>stderrors" /check:all)
+set(intel_fortran_linux_all_warning_flags -fpp -stand f18 -check all "SHELL:-warn all$<COMMA>errors$<COMMA>stderrors")
 set(gcc_all_warning_flags -Wall -pedantic)
 target_compile_options(all_compiler_warnings INTERFACE
                        "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<Fortran_COMPILER_ID:Intel,IntelLLVM>>:$<IF:$<BOOL:${WIN32}>,${intel_fortran_windows_all_warning_flags},${intel_fortran_linux_all_warning_flags}>>"
@@ -62,6 +62,14 @@ add_subdirectory(src/error_handling)
 add_executable(error_handling src/error_handling.f90)
 target_link_libraries(error_handling PRIVATE
     error-handling-lib
+    all_compiler_warnings
+    compiler_warnings_as_errors
+)
+
+add_subdirectory(src/logging)
+add_executable(logging src/logging.f90)
+target_link_libraries(logging PRIVATE
+    logging-lib
     all_compiler_warnings
     compiler_warnings_as_errors
 )

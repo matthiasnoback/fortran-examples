@@ -5,7 +5,7 @@ module m_files
    implicit none
 
    private
-   public :: file_get_contents, t_file_error
+   public :: file_get_contents, t_file_error, open_file, open_file_for_appending
 
    integer, parameter :: end_of_file_status = -1
    integer, parameter :: read_successful_status = 0
@@ -58,12 +58,9 @@ contains
 
       character, parameter :: new_line = char(10)
 
-      open (newunit=file_unit, file=trim(path), action='read', status='old', &
-            iostat=io_status, iomsg=io_message)
-
-      if (io_status > 0) then
-         error = t_file_error('Failed to open file', path, io_message)
-         goto 100
+      call open_file(path, 'read', 'old', 'rewind', file_unit, error)
+      if (allocated(error)) then
+         return
       end if
 
       contents = ''
@@ -76,16 +73,40 @@ contains
 
          if (.not. is_read_successful(io_status)) then
             error = t_file_error('Failed to read from file', path, io_message)
-            goto 100
+            close (file_unit)
+            exit
          end if
 
          contents = contents//trim(line_read)//new_line
       end do
-
-100   continue
-      close (file_unit)
-
    end subroutine file_get_contents
+
+   subroutine open_file_for_appending(path, file_unit, error)
+      character(len=*), intent(in) :: path
+      integer, intent(out) :: file_unit
+      class(t_abstract_error), allocatable, intent(out) :: error
+
+      call open_file(path, 'write', 'unknown', 'append', file_unit, error)
+   end subroutine open_file_for_appending
+
+   subroutine open_file(path, action, status, position, file_unit, error)
+      character(len=*), intent(in) :: path
+      character(len=*), intent(in) :: action
+      character(len=*), intent(in) :: status
+      character(len=*), intent(in) :: position
+      integer, intent(out) :: file_unit
+      class(t_abstract_error), allocatable, intent(out) :: error
+
+      integer :: io_status
+      character(len=255) :: io_message
+
+      open (newunit=file_unit, file=trim(path), action=action, status=status, &
+            position=position, iostat=io_status, iomsg=io_message)
+
+      if (io_status > 0) then
+         error = t_file_error('Failed to open file', path, io_message)
+      end if
+   end subroutine open_file
 
    pure function is_end_of_file(io_status) result(res)
       integer, intent(in) :: io_status

@@ -62,7 +62,8 @@ contains
       type(t_error) :: current_error
 
       previous_error = t_file_error('Failed to open file', 'file.txt', 'internal error')
-      current_error = t_error('Failed to read config', t_error_location(__FILE__, __LINE__), previous_error)
+      current_error = t_error('Failed to read config', &
+                              t_error_location(__FILE__, __LINE__), previous_error)
 
       print *, current_error%to_string()
    end subroutine test_nested_error

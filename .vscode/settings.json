@@ -14,8 +14,5 @@
         ]
     },
     "fortran.formatting.formatter": "Disabled",
-    // "files.exclude": {
-    //     "venv": true,
-    //     "out": true
-    // }
+    "cmake.useCMakePresets": "always"
 }
