@@ -1,5 +1,5 @@
 module m_files
-   use m_error, only: t_error, t_abstract_error
+   use m_error, only: t_error, t_abstract_error, t_error_location
    use m_to_string, only: to_string
 
    implicit none
@@ -17,15 +17,33 @@ module m_files
       procedure :: get_message => file_error_get_message
    end type t_file_error
 
+   interface t_file_error
+      module procedure :: file_error_constructor
+   end interface
+
 contains
+
+   pure function file_error_constructor(message, path, io_message, error_location) result(res)
+      character(len=*), intent(in) :: message
+      character(len=*), intent(in) :: path
+      character(len=*), intent(in) :: io_message
+      class(t_error_location), intent(in), optional :: error_location
+      type(t_file_error) :: res
+
+      res%message = message
+      res%path = path
+      res%io_message = io_message
+      if (present(error_location)) then
+         res%location = error_location
+      end if
+   end function file_error_constructor
 
    pure function file_error_get_message(error) result(res)
       class(t_file_error), intent(in) :: error
       character(len=:), allocatable :: res
 
-      res = error%message_string//', path: '//trim(error%path)// &
-            ', IO message: '//trim(error%io_message)// &
-            ', in file: '//error%file//' on line '//to_string(error%line)
+      res = error%t_error%get_message()//', path: '//trim(error%path)// &
+            ', IO message: '//trim(error%io_message)
    end function file_error_get_message
 
    subroutine file_get_contents(path, contents, error)
@@ -44,7 +62,7 @@ contains
             iostat=io_status, iomsg=io_message)
 
       if (io_status > 0) then
-         error = t_file_error(__FILE__, __LINE__, 'Failed to open file', path, io_message)
+         error = t_file_error('Failed to open file', path, io_message)
          goto 100
       end if
 
@@ -57,8 +75,7 @@ contains
          end if
 
          if (.not. is_read_successful(io_status)) then
-            ! TODO file and line optional, at the end?
-            error = t_file_error(__FILE__, __LINE__, 'Failed to read from file', path, io_message)
+            error = t_file_error('Failed to read from file', path, io_message)
             goto 100
          end if
 

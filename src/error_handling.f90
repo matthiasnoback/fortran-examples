@@ -1,23 +1,34 @@
 program error_handling
-   use m_error, only: t_error, t_abstract_error
-   use m_files, only: file_get_contents
+   use m_error, only: t_error, t_abstract_error, t_error_location
+   use m_files, only: file_get_contents, t_file_error
    use m_to_string, only: to_string
 
    implicit none
 
    call test_t_error()
 
+   call test_t_error_with_no_file_and_line()
+
    call test_file_error()
 
    call test_file_read()
+
+   call test_nested_error()
 
 contains
    subroutine test_t_error()
       type(t_error) :: my_error
 
-      my_error = t_error("Help in "//__FILE__//' on line '//to_string(__LINE__))
-      print *, my_error%get_message()
+      my_error = t_error('Help', t_error_location(__FILE__, __LINE__))
+      print *, my_error%to_string()
    end subroutine test_t_error
+
+   subroutine test_t_error_with_no_file_and_line()
+      type(t_error) :: my_error
+
+      my_error = t_error('Help no file and line')
+      print *, my_error%to_string()
+   end subroutine test_t_error_with_no_file_and_line
 
    subroutine test_file_error()
       class(t_abstract_error), allocatable :: file_error
@@ -45,5 +56,15 @@ contains
       end if
 
    end subroutine test_file_read
+
+   subroutine test_nested_error()
+      type(t_file_error) :: previous_error
+      type(t_error) :: current_error
+
+      previous_error = t_file_error('Failed to open file', 'file.txt', 'internal error')
+      current_error = t_error('Failed to read config', t_error_location(__FILE__, __LINE__), previous_error)
+
+      print *, current_error%to_string()
+   end subroutine test_nested_error
 
 end program error_handling
