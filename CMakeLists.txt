@@ -74,6 +74,14 @@ target_link_libraries(logging PRIVATE
     compiler_warnings_as_errors
 )
 
+add_subdirectory(src/stopwatch)
+add_executable(performance src/performance.f90)
+target_link_libraries(performance PRIVATE
+    stopwatch-lib
+    all_compiler_warnings
+    compiler_warnings_as_errors
+)
+
 add_subdirectory(test)
 
 find_package(Python COMPONENTS Interpreter REQUIRED)
