@@ -1,0 +1,6 @@
+
+set(FILES_AND_TESTS
+    my_tests.f90::my_test_success
+    my_tests.f90::test_hello_anyone
+    my_tests.f90::my_test_fail
+)

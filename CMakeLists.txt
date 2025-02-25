@@ -110,11 +110,7 @@ link_directories(${CMAKE_BINARY_DIR}/external/lib)
 enable_testing()
 include(CTest)
 
-set(FILES_AND_TESTS
-    ctest/my_tests.f90::my_test_success
-    ctest/my_tests.f90::test_hello_anyone
-    ctest/my_tests.f90::my_test_fail
-)
+include(ctest/define-tests)
 
 set(TEST_FILES)
 set(TEST_FUNCTIONS)
@@ -133,7 +129,7 @@ foreach(FILE_AND_TEST IN LISTS FILES_AND_TESTS)
         string(SUBSTRING "${FILE_AND_TEST}" 0 ${pos} FILE)
         math(EXPR pos "${pos} + 2")
         string(SUBSTRING "${FILE_AND_TEST}" ${pos} -1 TEST)
-        append_unique(TEST_FILES "${FILE}")
+        append_unique(TEST_FILES "ctest/${FILE}")
         list(APPEND TEST_FUNCTIONS "${TEST}")
         # message(INFO "File: ${FILE}")
         # message(INFO "Test: ${TEST}")
