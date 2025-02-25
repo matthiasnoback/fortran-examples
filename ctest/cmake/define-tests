@@ -1,4 +1,4 @@
-enable_testing()
+
 set(TEST_LIST
     my_test_success
     test_hello_anyone

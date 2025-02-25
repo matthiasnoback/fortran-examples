@@ -82,12 +82,63 @@ target_link_libraries(performance PRIVATE
     compiler_warnings_as_errors
 )
 
-add_subdirectory(ctest)
-include(ctest/cmake/define-tests)
+enable_testing()
+
+# include(FetchContent)
+# FetchContent_Declare(
+#     FAssertProject
+#     GIT_REPOSITORY https://github.com/degawa/fassert
+#     GIT_TAG        master
+#     SOURCE_SUBDIR ${CMAKE_CURRENT_SOURCE_DIR}/ctest/cmake/fassert
+# )
+# FetchContent_MakeAvailable(FAssertProject)
+
+# This will download fassert, and we patch the project by copying a custom CMakeLists.txt file to its source directory
+# CMake will consider this a completely separate project, and build it only once
+include(ExternalProject)
+set(patch_command ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ctest/cmake/fassert/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt)
+ExternalProject_Add(fassert-lib-external-project
+  GIT_REPOSITORY    https://github.com/degawa/fassert
+  GIT_TAG           master
+  CMAKE_GENERATOR "Visual Studio 17 2022"
+  CMAKE_GENERATOR_TOOLSET "fortran=ifort"
+  PATCH_COMMAND ${patch_command}
+  CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
+  INSTALL_DIR ${CMAKE_BINARY_DIR}/external
+  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin
+  INSTALL_BYPRODUCTS ${CMAKE_BINARY_DIR}/external/lib/fassert-lib.lib
+)
+
+# Now we can use fassert as a library in our CTest project
+enable_testing()
+include(CTest)
+
+set(TEST_LIST
+    my_test_success
+    test_hello_anyone
+    my_test_fail
+)
+
+create_test_sourcelist(_ my_tests_main.c ${TEST_LIST})
+
+foreach(test ${TEST_LIST})
+    add_test(NAME ${test} COMMAND my_tests ${test})
+endforeach()
+
+add_library(my_tests_fortran ctest/my_tests.f90)
+
+add_dependencies(my_tests_fortran fassert-lib-external-project)
+# find_library(FASSERT_LIB NAMES fassert-lib PATHS ${CMAKE_BINARY_DIR}/external/lib)
+
+include_directories(my_tests_fortran ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin)
+link_directories(${CMAKE_BINARY_DIR}/external/lib)
+
+target_link_libraries(my_tests_fortran PRIVATE hello_world-lib fassert-lib)
+
+add_executable(my_tests my_tests_main.c)
+target_link_libraries(my_tests PRIVATE my_tests_fortran)
 
 find_package(Python COMPONENTS Interpreter REQUIRED)
 if(NOT Python_FOUND)
     message(SEND_ERROR "Please install Python")
 endif()
-
-link_directories(${CMAKE_BINARY_DIR}/external/lib)
