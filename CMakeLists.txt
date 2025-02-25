@@ -82,20 +82,16 @@ target_link_libraries(performance PRIVATE
     compiler_warnings_as_errors
 )
 
-enable_testing()
 
-# include(FetchContent)
-# FetchContent_Declare(
-#     FAssertProject
-#     GIT_REPOSITORY https://github.com/degawa/fassert
-#     GIT_TAG        master
-#     SOURCE_SUBDIR ${CMAKE_CURRENT_SOURCE_DIR}/ctest/cmake/fassert
-# )
-# FetchContent_MakeAvailable(FAssertProject)
+find_package(Python COMPONENTS Interpreter REQUIRED)
+if(NOT Python_FOUND)
+    message(SEND_ERROR "Please install Python")
+endif()
 
 # This will download fassert, and we patch the project by copying a custom CMakeLists.txt file to its source directory
 # CMake will consider this a completely separate project, and build it only once
 include(ExternalProject)
+set(FASSERT_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin)
 set(patch_command ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ctest/cmake/fassert/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt)
 ExternalProject_Add(fassert-lib-external-project
   GIT_REPOSITORY    https://github.com/degawa/fassert
@@ -105,40 +101,51 @@ ExternalProject_Add(fassert-lib-external-project
   PATCH_COMMAND ${patch_command}
   CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
   INSTALL_DIR ${CMAKE_BINARY_DIR}/external
-  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin
-  INSTALL_BYPRODUCTS ${CMAKE_BINARY_DIR}/external/lib/fassert-lib.lib
+  BINARY_DIR ${FASSERT_MOD_DIR}
+  UPDATE_DISCONNECTED TRUE
 )
+include_directories(${FASSERT_MOD_DIR})
+link_directories(${CMAKE_BINARY_DIR}/external/lib)
 
-# Now we can use fassert as a library in our CTest project
 enable_testing()
 include(CTest)
 
-set(TEST_LIST
-    my_test_success
-    test_hello_anyone
-    my_test_fail
+set(FILES_AND_TESTS
+    ctest/my_tests.f90::my_test_success
+    ctest/my_tests.f90::test_hello_anyone
+    ctest/my_tests.f90::my_test_fail
 )
 
-create_test_sourcelist(_ my_tests_main.c ${TEST_LIST})
+set(TEST_FILES)
+set(TEST_FUNCTIONS)
 
-foreach(test ${TEST_LIST})
-    add_test(NAME ${test} COMMAND my_tests ${test})
+function(append_unique list_var item)
+    list(FIND ${list_var} ${item} index)
+    if(index EQUAL -1)
+        list(APPEND ${list_var} ${item})
+        set(${list_var} "${${list_var}}" PARENT_SCOPE)
+    endif()
+endfunction()
+
+foreach(FILE_AND_TEST IN LISTS FILES_AND_TESTS)
+    string(FIND "${FILE_AND_TEST}" "::" pos)
+    if(pos GREATER -1)
+        string(SUBSTRING "${FILE_AND_TEST}" 0 ${pos} FILE)
+        math(EXPR pos "${pos} + 2")
+        string(SUBSTRING "${FILE_AND_TEST}" ${pos} -1 TEST)
+        append_unique(TEST_FILES "${FILE}")
+        list(APPEND TEST_FUNCTIONS "${TEST}")
+        # message(INFO "File: ${FILE}")
+        # message(INFO "Test: ${TEST}")
+        add_test(NAME ${FILE_AND_TEST} COMMAND my_tests ${TEST})
+    endif()
 endforeach()
 
-add_library(my_tests_fortran ctest/my_tests.f90)
+create_test_sourcelist(_ my_tests_main.c ${TEST_FUNCTIONS})
 
+add_library(my_tests_fortran ${TEST_FILES})
 add_dependencies(my_tests_fortran fassert-lib-external-project)
-# find_library(FASSERT_LIB NAMES fassert-lib PATHS ${CMAKE_BINARY_DIR}/external/lib)
-
-include_directories(my_tests_fortran ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin)
-link_directories(${CMAKE_BINARY_DIR}/external/lib)
-
 target_link_libraries(my_tests_fortran PRIVATE hello_world-lib fassert-lib)
 
 add_executable(my_tests my_tests_main.c)
 target_link_libraries(my_tests PRIVATE my_tests_fortran)
-
-find_package(Python COMPONENTS Interpreter REQUIRED)
-if(NOT Python_FOUND)
-    message(SEND_ERROR "Please install Python")
-endif()
