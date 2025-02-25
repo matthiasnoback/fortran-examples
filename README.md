@@ -22,11 +22,13 @@ After installing, run it, and open the folder where you've cloned this project t
 
 Open the `Extensions` panel on the left (or press `Ctrl + Shift + X`). Then install the following extensions:
 
-- Cmake Tools
-- Modern Fortran
-- Python
-- Trigger Task on Save
-- EditorConfig for VS Code
+- Cmake Tools (provides a UI for interacting with CMake targets)
+- Modern Fortran (understands Fortran code and gives code completion based on input from the Fortran Language Server, etc., runs the compiler as a linter)
+- Trigger Task on Save (allows auto-formatting with fprettify and running the Fortitude linter on-save)
+- EditorConfig for VS Code (automatically deals with whitespacing)
+- CMake IntelliSense (formatting, auto-complete in CMake configuration)
+- CTest Lab (integrates CTests with the Test panel so you can run tests in your IDE)
+- Python (helps with writing Python code for the output visualization scripts)
 
 CMake Tools may ask for a "CMake configure preset". Pick "ifx". In case you picked the wrong one or ever need to manually select it: press `Ctrl + Shift + P` to find a command, and look for the command: "CMake: Select configure preset".
 
