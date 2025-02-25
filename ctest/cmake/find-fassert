@@ -1,16 +1,16 @@
 #[[.rst:
-Find test-drive
+Find fassert
 ---------------
 
-Makes the test-drive project available.
+Makes the fassert project available.
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
 
 This module provides the following imported target, if found:
 
-``test-drive::test-drive``
-  The test-drive library
+``fassert::fassert``
+  The fassert library
 
 
 Result Variables
@@ -18,15 +18,15 @@ Result Variables
 
 This module will define the following variables:
 
-``TEST_DRIVE_FOUND``
-  True if the test-drive library is available
+``FASSERT_FOUND``
+  True if the fassert library is available
 
-``TEST_DRIVE_SOURCE_DIR``
-  Path to the source directory of the test-drive project,
+``FASSERT_SOURCE_DIR``
+  Path to the source directory of the fassert project,
   only set if the project is included as source.
 
-``TEST_DRIVE_BINARY_DIR``
-  Path to the binary directory of the test-drive project,
+``FASSERT_BINARY_DIR``
+  Path to the binary directory of the fassert project,
   only set if the project is included as source.
 
 Cache variables
@@ -34,27 +34,27 @@ Cache variables
 
 The following cache variables may be set to influence the library detection:
 
-``TEST_DRIVE_FIND_METHOD``
+``FASSERT_FIND_METHOD``
   Methods to find or make the project available. Available methods are
   - ``cmake``: Try to find via CMake config file
   - ``pkgconf``: Try to find via pkg-config file
   - ``subproject``: Use source in subprojects directory
   - ``fetch``: Fetch the source from upstream
 
-``TEST_DRIVE_DIR``
+``FASSERT_DIR``
   Used for searching the CMake config file
 
-``TEST_DRIVE_SUBPROJECT``
-  Directory to find the test-drive subproject, relative to the project root
+``FASSERT_SUBPROJECT``
+  Directory to find the fassert subproject, relative to the project root
 
-``TEST_DRIVE_GIT_TAG``
+``FASSERT_GIT_TAG``
   The tag to use if fetching from git.
 
 #]]
 
-set(_lib "test-drive")
-set(_pkg "TEST_DRIVE")
-set(_url "https://github.com/fortran-lang/test-drive")
+set(_lib "fassert")
+set(_pkg "FASSERT")
+set(_url "https://github.com/degawa/fassert")
 
 if(NOT DEFINED "${_pkg}_FIND_METHOD")
   if(DEFINED "${PROJECT_NAME}-dependency-method")

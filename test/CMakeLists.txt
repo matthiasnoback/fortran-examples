@@ -10,6 +10,8 @@ if (NOT TARGET "test-drive::test-drive")
     find_package("test-drive" REQUIRED)
 endif ()
 
+include(cmake/find-fassert)
+
 # Unit testing
 set(
         tests

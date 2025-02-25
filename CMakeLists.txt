@@ -82,27 +82,12 @@ target_link_libraries(performance PRIVATE
     compiler_warnings_as_errors
 )
 
-add_subdirectory(test)
+add_subdirectory(ctest)
+include(ctest/cmake/define-tests)
 
 find_package(Python COMPONENTS Interpreter REQUIRED)
 if(NOT Python_FOUND)
     message(SEND_ERROR "Please install Python")
 endif()
 
-execute_process(COMMAND ${Python_EXECUTABLE} -m venv ${PROJECT_SOURCE_DIR}/venv)
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install -q --upgrade pip)
-execute_process(COMMAND ${PROJECT_SOURCE_DIR}/venv/Scripts/python.exe -m pip install -q -r ${PROJECT_SOURCE_DIR}/requirements.txt)
-
-add_library(my_tests_fortran ctest/my_tests.f90)
-enable_testing()
-set(TEST_LIST
-  my_test_success
-  my_test_fail
-)
-create_test_sourcelist(_ my_tests_main.c ${TEST_LIST})
-add_executable(my_tests my_tests_main.c)
-target_link_libraries(my_tests PRIVATE my_tests_fortran)
-
-foreach (test ${TEST_LIST})
-  add_test(NAME ${test} COMMAND my_tests ${test})
-endforeach ()
+link_directories(${CMAKE_BINARY_DIR}/external/lib)
