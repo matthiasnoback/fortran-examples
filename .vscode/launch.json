@@ -5,7 +5,6 @@
             "name": "Debug current CMake launch target",
             "type": "cppvsdbg",
             "request": "launch",
-            // Resolved by CMake Tools:
             "program": "${command:cmake.launchTargetPath}",
             "args": [],
             "stopAtEntry": false,

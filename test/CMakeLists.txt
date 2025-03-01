@@ -10,13 +10,10 @@ if (NOT TARGET "test-drive::test-drive")
     find_package("test-drive" REQUIRED)
 endif ()
 
-include(cmake/find-fassert)
-
 # Unit testing
 set(
         tests
-        "suite1"
-        "tsunami"
+        "hello_world_module"
 )
 set(
         test-srcs
@@ -28,20 +25,14 @@ foreach (t IN LISTS tests)
 endforeach ()
 
 add_executable(
-        "${PROJECT_NAME}-tester"
+        "hello-world-tester"
         "${test-srcs}"
 )
 target_link_libraries(
-        "${PROJECT_NAME}-tester"
+        "hello-world-tester"
         PRIVATE
-        "${PROJECT_NAME}-lib"
-        "ode-lib"
-        "tsunami-lib"
+        "hello_world-lib"
         "test-drive::test-drive"
 )
 
-target_include_directories("${PROJECT_NAME}-tester" INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
-
-foreach (t IN LISTS tests)
-    add_test("${PROJECT_NAME}/${t}" "${PROJECT_NAME}-tester" "${t}")
-endforeach ()
+target_include_directories("hello-world-tester" INTERFACE ${CMAKE_CURRENT_BINARY_DIR})

@@ -88,60 +88,107 @@ if(NOT Python_FOUND)
     message(SEND_ERROR "Please install Python")
 endif()
 
-# This will download fassert, and we patch the project by copying a custom CMakeLists.txt file to its source directory
-# CMake will consider this a completely separate project, and build it only once
-include(ExternalProject)
-set(FASSERT_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin)
-set(patch_command ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ctest/cmake/fassert/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt)
-ExternalProject_Add(fassert-lib-external-project
-  GIT_REPOSITORY    https://github.com/degawa/fassert
-  GIT_TAG           master
-  CMAKE_GENERATOR "Visual Studio 17 2022"
-  CMAKE_GENERATOR_TOOLSET "fortran=ifort"
-  PATCH_COMMAND ${patch_command}
-  CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
-  INSTALL_DIR ${CMAKE_BINARY_DIR}/external
-  BINARY_DIR ${FASSERT_MOD_DIR}
-  UPDATE_DISCONNECTED TRUE
+# # This will download fassert, and we patch the project by copying a custom CMakeLists.txt file to its source directory
+# # CMake will consider this a completely separate project, and build it only once
+# include(ExternalProject)
+# set(FASSERT_MOD_DIR ${CMAKE_CURRENT_BINARY_DIR}/fassert-lib-bin)
+# set(patch_command ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/ctest/cmake/fassert/CMakeLists.txt <SOURCE_DIR>/CMakeLists.txt)
+# ExternalProject_Add(fassert-lib-external-project
+#   GIT_REPOSITORY    https://github.com/degawa/fassert
+#   GIT_TAG           master
+#   CMAKE_GENERATOR "Visual Studio 17 2022"
+#   CMAKE_GENERATOR_TOOLSET "fortran=ifort"
+#   PATCH_COMMAND ${patch_command}
+#   CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
+#   INSTALL_DIR ${CMAKE_BINARY_DIR}/external
+#   BINARY_DIR ${FASSERT_MOD_DIR}
+#   UPDATE_DISCONNECTED TRUE
+# )
+# include_directories(${FASSERT_MOD_DIR})
+# link_directories(${CMAKE_BINARY_DIR}/external/lib)
+
+# enable_testing()
+# include(CTest)
+
+# include(ctest/define-tests)
+
+# set(TEST_FILES)
+# set(TEST_FUNCTIONS)
+
+# function(append_unique list_var item)
+#     list(FIND ${list_var} ${item} index)
+#     if(index EQUAL -1)
+#         list(APPEND ${list_var} ${item})
+#         set(${list_var} "${${list_var}}" PARENT_SCOPE)
+#     endif()
+# endfunction()
+
+# foreach(FILE_AND_TEST IN LISTS FILES_AND_TESTS)
+#     string(FIND "${FILE_AND_TEST}" "::" pos)
+#     if(pos GREATER -1)
+#         string(SUBSTRING "${FILE_AND_TEST}" 0 ${pos} FILE)
+#         math(EXPR pos "${pos} + 2")
+#         string(SUBSTRING "${FILE_AND_TEST}" ${pos} -1 TEST)
+#         append_unique(TEST_FILES "ctest/${FILE}")
+#         list(APPEND TEST_FUNCTIONS "${TEST}")
+#         # message(INFO "File: ${FILE}")
+#         # message(INFO "Test: ${TEST}")
+#         add_test(NAME ${FILE_AND_TEST} COMMAND my_tests ${TEST})
+#     endif()
+# endforeach()
+
+# create_test_sourcelist(_ my_tests_main.c ${TEST_FUNCTIONS})
+
+# add_library(my_tests_fortran ${TEST_FILES})
+# # add_dependencies(my_tests_fortran fassert-lib-external-project)
+# target_link_libraries(my_tests_fortran PRIVATE hello_world-lib)
+
+# add_executable(my_tests my_tests_main.c)
+# target_link_libraries(my_tests PRIVATE my_tests_fortran)
+
+# add_subdirectory(test)
+
+# Disable deprecation warnings for test-drive package
+set(CMAKE_WARN_DEPRECATED OFF CACHE BOOL "" FORCE)
+
+# Disable testing by default
+set(TEST_DRIVE_BUILD_TESTING OFF CACHE BOOL "Enable testing for the test-drive project")
+
+include(test/cmake/find-test-drive)
+
+if (NOT TARGET "test-drive::test-drive")
+    find_package("test-drive" REQUIRED)
+endif ()
+
+# Unit testing
+set(
+        tests
+        "hello_world_module"
 )
-include_directories(${FASSERT_MOD_DIR})
-link_directories(${CMAKE_BINARY_DIR}/external/lib)
+set(
+        test-srcs
+        "test/main.f90"
+)
+foreach (t IN LISTS tests)
+    string(MAKE_C_IDENTIFIER ${t} t)
+    list(APPEND test-srcs "test/test_${t}.f90")
+endforeach ()
+
+add_executable(
+        "hello-world-tester"
+        "${test-srcs}"
+)
+target_link_libraries(
+        "hello-world-tester"
+        PRIVATE
+        "hello_world-lib"
+        "test-drive::test-drive"
+)
+
+target_include_directories("hello-world-tester" INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
 enable_testing()
 include(CTest)
-
-include(ctest/define-tests)
-
-set(TEST_FILES)
-set(TEST_FUNCTIONS)
-
-function(append_unique list_var item)
-    list(FIND ${list_var} ${item} index)
-    if(index EQUAL -1)
-        list(APPEND ${list_var} ${item})
-        set(${list_var} "${${list_var}}" PARENT_SCOPE)
-    endif()
-endfunction()
-
-foreach(FILE_AND_TEST IN LISTS FILES_AND_TESTS)
-    string(FIND "${FILE_AND_TEST}" "::" pos)
-    if(pos GREATER -1)
-        string(SUBSTRING "${FILE_AND_TEST}" 0 ${pos} FILE)
-        math(EXPR pos "${pos} + 2")
-        string(SUBSTRING "${FILE_AND_TEST}" ${pos} -1 TEST)
-        append_unique(TEST_FILES "ctest/${FILE}")
-        list(APPEND TEST_FUNCTIONS "${TEST}")
-        # message(INFO "File: ${FILE}")
-        # message(INFO "Test: ${TEST}")
-        add_test(NAME ${FILE_AND_TEST} COMMAND my_tests ${TEST})
-    endif()
-endforeach()
-
-create_test_sourcelist(_ my_tests_main.c ${TEST_FUNCTIONS})
-
-add_library(my_tests_fortran ${TEST_FILES})
-add_dependencies(my_tests_fortran fassert-lib-external-project)
-target_link_libraries(my_tests_fortran PRIVATE hello_world-lib fassert-lib)
-
-add_executable(my_tests my_tests_main.c)
-target_link_libraries(my_tests PRIVATE my_tests_fortran)
+foreach (t IN LISTS tests)
+    add_test("${t}" "hello-world-tester" "${t}")
+endforeach ()

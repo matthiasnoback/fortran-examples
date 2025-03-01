@@ -1,18 +1,20 @@
 {
-"fortran.linter.compiler":"ifx",
-"fortran.linter.includePaths":[
-"./**"
-],
-"fortran.linter.modOutput":"./build/mod",
-"triggerTaskOnSave.tasks":{
-"Fortitude Check":[
-"*.f90"
-],
-"fprettify":[
-"*.f90"
-]
-},
-"fortran.formatting.formatter":"Disabled",
-"cmake.useCMakePresets": "always",
-"fortran.fortls.disableDiagnostics": false
+    "fortran.linter.compiler": "ifx",
+    "fortran.linter.includePaths": [
+        "./**"
+    ],
+    "fortran.linter.modOutput": "./build/mod",
+    "triggerTaskOnSave.tasks": {
+        "Fortitude Check": [
+            "*.f90",
+            "!out/"
+        ],
+        "fprettify": [
+            "*.f90",
+            "!out/"
+        ]
+    },
+    "fortran.formatting.formatter": "Disabled",
+    "cmake.useCMakePresets": "always",
+    "fortran.fortls.disableDiagnostics": false
 }

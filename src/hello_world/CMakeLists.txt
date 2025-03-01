@@ -3,6 +3,7 @@ set(library_name hello_world-lib)
 add_library(${library_name} STATIC
     hello.f90
     world.f90
+    m_hello_world.f90
 )
 
 # Allows main project to find .mod files for used modules
