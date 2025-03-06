@@ -1,16 +1,16 @@
 module m_hello_world
-    implicit none
+   implicit none
 
-    private
-    
-    public :: hello_world
+   private
+
+   public :: hello_world
 
 contains
 
-    function hello_world() result (res)
-        character(len=:), allocatable :: res
+   function hello_world() result(res)
+      character(len=:), allocatable :: res
 
-        res = 'Hello, world!'
-    end function hello_world
-    
+      res = 'Hello, world!'
+   end function hello_world
+
 end module m_hello_world

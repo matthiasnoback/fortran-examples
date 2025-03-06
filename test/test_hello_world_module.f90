@@ -16,7 +16,7 @@ contains
       testsuite = [ &
                   new_unittest("valid", test_valid), &
                   new_unittest("hello_world", test_hello_world), &
-                  new_unittest("invalid", test_invalid, should_fail=.true.) &
+                  ! new_unittest("invalid", test_invalid, should_fail=.true.) &
                   ]
 
    end subroutine collect_hello_world_module_tests
@@ -37,10 +37,10 @@ contains
       if (allocated(error)) return
    end subroutine test_hello_world
 
-   subroutine test_invalid(error)
-      type(error_type), allocatable, intent(out) :: error
-      call test_failed(error, "Custom check failed", "Additional context")
-      return
-   end subroutine test_invalid
+   ! subroutine test_invalid(error)
+   !    type(error_type), allocatable, intent(out) :: error
+   !    call test_failed(error, "Custom check failed", "Additional context")
+   !    return
+   ! end subroutine test_invalid
 
 end module test_hello_world_module

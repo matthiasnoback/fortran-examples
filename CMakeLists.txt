@@ -82,11 +82,9 @@ target_link_libraries(performance PRIVATE
     compiler_warnings_as_errors
 )
 
+add_subdirectory(src/examples)
 
-find_package(Python COMPONENTS Interpreter REQUIRED)
-if(NOT Python_FOUND)
-    message(SEND_ERROR "Please install Python")
-endif()
+include(cmake/python_dependencies.cmake)
 
 # # This will download fassert, and we patch the project by copying a custom CMakeLists.txt file to its source directory
 # # CMake will consider this a completely separate project, and build it only once
