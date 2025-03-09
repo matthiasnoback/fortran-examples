@@ -13,6 +13,7 @@ set(example_programs
     example_vector_factory.f90
     example_logging.f90
     example_logging_interface.f90
+    example_logging_multilogger.f90
 )
 
 foreach(program_file IN LISTS example_programs)
