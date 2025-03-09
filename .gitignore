@@ -12,7 +12,6 @@ cmake-build-*
 /venv
 
 # Generated output
-*.txt
 *.svg
 *.log
 
