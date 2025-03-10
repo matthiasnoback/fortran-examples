@@ -14,6 +14,8 @@ set(example_programs
     example_logging.f90
     example_logging_interface.f90
     example_logging_multilogger.f90
+    example_custom_concat.f90
+    example_logging_final_procedure.f90
 )
 
 foreach(program_file IN LISTS example_programs)

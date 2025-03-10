@@ -81,6 +81,9 @@ program example
    print *, point_2%get_v1(), point_2%get_v2()
 
    print *, sqrt((point_1%get_v1() - point_2%get_v1())**2 + &
-      (point_2%get_v2() - point_2%get_v2())**2)
+                 (point_2%get_v2() - point_2%get_v2())**2)
+
+   call point_1%set_v1(point_1%get_v1() + point_2%get_v1())
+   call point_1%set_v2(point_1%get_v2() + point_2%get_v2())
 
 end program example
