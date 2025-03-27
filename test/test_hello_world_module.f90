@@ -15,7 +15,7 @@ contains
 
       testsuite = [ &
                   new_unittest("valid", test_valid), &
-                  new_unittest("hello_world", test_hello_world), &
+                  new_unittest("hello_world", test_hello_world) &
                   ! new_unittest("invalid", test_invalid, should_fail=.true.) &
                   ]
 
