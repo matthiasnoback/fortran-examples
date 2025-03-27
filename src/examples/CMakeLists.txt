@@ -16,6 +16,9 @@ set(example_programs
     example_logging_multilogger.f90
     example_custom_concat.f90
     example_logging_final_procedure.f90
+    example_logging_logger_factory.f90
+    example_logging_logger_factory_with_pointer.f90
+    example_2d_vector_generic_type_bound_procedure.f90
 )
 
 foreach(program_file IN LISTS example_programs)
