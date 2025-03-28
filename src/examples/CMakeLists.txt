@@ -20,6 +20,7 @@ set(example_programs
     example_logging_logger_factory_with_pointer.f90
     example_2d_vector_generic_type_bound_procedure.f90
     example_logging_file_and_print_logger.f90
+    example_logging_file_logger_final_procedure_bad_example.f90
 )
 
 foreach(program_file IN LISTS example_programs)

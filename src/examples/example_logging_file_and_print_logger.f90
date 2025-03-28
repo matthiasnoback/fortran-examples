@@ -49,7 +49,7 @@ module m_logging
    implicit none(type, external)
 
    private
-   public :: get_logger
+   public :: get_logger, t_abstract_logger
 
    type, abstract :: t_abstract_logger
    contains
@@ -70,6 +70,7 @@ module m_logging
       integer :: log_file_unit
    contains
       procedure :: log => file_logger_log
+      final :: file_logger_destructor
    end type t_file_logger
 
    interface t_file_logger
@@ -91,6 +92,7 @@ module m_logging
       class(t_stdout_logger), allocatable :: stdout_logger
    contains
       procedure :: log => do_everything_logger_log
+      final :: do_everything_logger_destructor
    end type t_do_everything_logger
 
    interface t_do_everything_logger
@@ -99,10 +101,14 @@ module m_logging
 
    class(t_abstract_logger), allocatable, target :: the_logger
 contains
-   function do_everything_logger_constructor(debug, quiet) result(logger)
+   impure function do_everything_logger_constructor(debug, quiet) result(logger)
       logical, intent(in) :: debug
       logical, intent(in) :: quiet
-      type(t_do_everything_logger) :: logger
+      type(t_do_everything_logger), pointer :: logger
+
+      print *, 'Constructor of t_do_everything_logger'
+
+      allocate(logger)
 
       logger%debug = debug
       logger%quiet = quiet
@@ -110,13 +116,20 @@ contains
       logger%stdout_logger = t_stdout_logger()
    end function do_everything_logger_constructor
 
-   function file_logger_constructor(log_file_path) result(logger)
+   subroutine do_everything_logger_destructor(self)
+      type(t_do_everything_logger) :: self
+
+      print *, 'Destructor of t_do_everything_logger called'
+   end subroutine do_everything_logger_destructor
+
+   function file_logger_constructor(log_file_path) result(file_logger)
       character(len=*), intent(in) :: log_file_path
-      type(t_file_logger) :: logger
+      type(t_file_logger), pointer :: file_logger
 
       integer :: open_status
       integer :: log_file_unit
 
+      print *, 'Constructing file logger'
       open (file=log_file_path, newunit=log_file_unit, status='unknown', &
             position='append', action='write', iostat=open_status)
 
@@ -124,8 +137,15 @@ contains
          error stop "Could not open log file for writing"
       end if
 
-      logger%log_file_unit = log_file_unit
+      allocate(file_logger)
+
+      file_logger%log_file_unit = log_file_unit
    end function file_logger_constructor
+
+   subroutine file_logger_destructor(self)
+      type(t_file_logger) :: self
+      print *, 'Destructor of file logger called'
+   end subroutine file_logger_destructor
 
    subroutine file_logger_log(self, message)
       class(t_file_logger), intent(inout) :: self
@@ -184,12 +204,18 @@ contains
 end module m_logging
 
 program example
-   use m_logging, only: get_logger
+   use m_logging, only: get_logger, t_abstract_logger
 
    implicit none(type, external)
 
-   call get_logger()%log('A message')
+   class(t_abstract_logger), pointer :: logger
 
-   call get_logger()%log('Another message')
+   logger => get_logger();
+
+   call logger%log('A message')
+
+   call logger%log('Another message')
+
+   deallocate(logger)
 
 end program example
