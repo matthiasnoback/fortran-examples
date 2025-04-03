@@ -21,6 +21,11 @@ set(example_programs
     example_2d_vector_generic_type_bound_procedure.f90
     example_logging_file_and_print_logger.f90
     example_logging_file_logger_final_procedure_bad_example.f90
+    example_integrate_trapezoid_with_procedure_pointer.f90
+    example_integrate_trapezoid_with_function_argument_interface.f90
+    example_plot_function_to_be_integrated.f90
+    example_integrate_trapezoid_procedure_pointer_performance.f90
+    example_integrate_trapezoid_with_derived_type.f90
 )
 
 foreach(program_file IN LISTS example_programs)

@@ -95,3 +95,11 @@ To check all files at once, run inside a terminal:
 ```bash
 .\venv\Scripts\fortitude.exe check --fix -- src test
 ```
+
+## Plotting
+
+If your program outputs x/y points on each line, you can pass the output to `plot_points.py` and generate a nice graph for it, e.g. after building the `example_plot_function_to_be_integrated` target, run:
+
+```bash
+.\out\build\ifx\src\examples\Debug\example_plot_function_to_be_integrated.exe | python .\plot_points.py
+```

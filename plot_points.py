@@ -29,10 +29,9 @@ x = array[:, 0]
 y = array[:, 1]
 
 # Create the plot
-plt.plot(x, y, marker="o", linestyle="-", label="Values")
-plt.xlabel("Time")
-plt.ylabel("Value")
+plt.plot(x, y, linestyle="-")
+plt.xlabel("x")
+plt.ylabel("y")
 plt.title("Function")
-plt.legend()
 plt.rcParams.update({"font.size": 16})
 plt.show()
