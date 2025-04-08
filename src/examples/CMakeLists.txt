@@ -26,6 +26,9 @@ set(example_programs
     example_plot_function_to_be_integrated.f90
     example_integrate_trapezoid_procedure_pointer_performance.f90
     example_integrate_trapezoid_with_derived_type.f90
+    example_timer_and_timer_list_copies.f90
+    example_timer_and_timer_list_improved.f90
+    example_timer_and_timer_list_get_allocated.f90
 )
 
 foreach(program_file IN LISTS example_programs)
