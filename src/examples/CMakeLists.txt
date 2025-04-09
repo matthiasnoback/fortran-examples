@@ -29,6 +29,10 @@ set(example_programs
     example_timer_and_timer_list_copies.f90
     example_timer_and_timer_list_improved.f90
     example_timer_and_timer_list_get_allocated.f90
+    example_timer_and_timer_linked_list.f90
+    example_logging_logger_factory_with_pointer_and_multi_logger.f90
+    example_multi_logger_tryout.f90
+    example_wrapping_instances.f90
 )
 
 foreach(program_file IN LISTS example_programs)

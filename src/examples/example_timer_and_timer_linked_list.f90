@@ -76,8 +76,13 @@ module stopwatch_timer_list
    private
    public :: timer_list_t
 
+   type :: timer_list_node_t
+      type(timer_t) :: timer
+      type(timer_list_node_t), pointer :: next => null()
+   end type timer_list_node_t
+
    type :: timer_list_t
-      type(timer_t), dimension(:), allocatable :: timers
+      type(timer_list_node_t), pointer :: head => null()
    contains
       procedure :: add => timer_list_add
       procedure :: get => timer_list_get
@@ -88,12 +93,17 @@ contains
 
    subroutine timer_list_add(self, timer)
       class(timer_list_t), intent(inout) :: self
+      type(timer_list_node_t), pointer :: new_node
       type(timer_t), intent(in) :: timer
 
-      if (allocated(self%timers)) then
-         self%timers = [self%timers, timer]
+      if (.not. associated(self%head)) then
+         allocate (self%head)
+         self%head%timer = timer
       else
-         self%timers = [timer]
+         allocate (new_node)
+         new_node%timer = timer
+         new_node%next => self%head
+         self%head => new_node
       end if
    end subroutine timer_list_add
 
@@ -102,13 +112,15 @@ contains
       character(len=*), intent(in) :: label
       type(timer_t), pointer :: timer
 
-      integer :: i
+      type(timer_list_node_t), pointer :: current
 
-      do i = 1, size(self%timers)
-         if (self%timers(i)%label == label) then
-            timer => self%timers(i)
+      current => self%head
+      do while (associated(current))
+         if (current%timer%label == label) then
+            timer => current%timer
             return
          end if
+         current => current%next
       end do
 
       timer => null()
@@ -117,10 +129,12 @@ contains
    subroutine timer_list_print_all(self)
       class(timer_list_t), intent(inout) :: self
 
-      integer :: i
+      type(timer_list_node_t), pointer :: current
 
-      do i = 1, size(self%timers)
-         call self%timers(i)%print()
+      current => self%head
+      do while (associated(current))
+         call current%timer%print()
+         current => current%next
       end do
    end subroutine timer_list_print_all
 

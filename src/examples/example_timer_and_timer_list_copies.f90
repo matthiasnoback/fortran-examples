@@ -99,6 +99,8 @@ program example
    call timer1%print()
 
    call timer_list%add(timer2)
+   call timer2%end()
+   call timer2%print()
 
    call timer_list%print_all()
 
