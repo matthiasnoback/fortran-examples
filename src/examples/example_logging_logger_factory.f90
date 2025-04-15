@@ -102,4 +102,8 @@ program example
 
    call logger%log('Another message')
 
+   logger = get_logger()
+
+   call logger%log('A third message')
+
 end program example

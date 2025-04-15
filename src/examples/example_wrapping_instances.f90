@@ -49,7 +49,7 @@ contains
 
       print *, 'Constructing counting logger'
 
-      new_logger%counter = 1000000
+      new_logger%counter = 0
    end function counting_logger_constructor
 
    subroutine counting_logger_log(self, message)
@@ -156,8 +156,8 @@ program example
 
    implicit none(type, external)
 
-   call get_logger()%log('Test 1')
-   call get_logger()%log('Test 2')
+   call get_logger()%log('Test message 1')
+   call get_logger()%log('Test message 2')
 
    call cleanup()
 end program example

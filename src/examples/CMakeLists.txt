@@ -33,6 +33,7 @@ set(example_programs
     example_logging_logger_factory_with_pointer_and_multi_logger.f90
     example_multi_logger_tryout.f90
     example_wrapping_instances.f90
+    example_dt_pointers.f90
 )
 
 foreach(program_file IN LISTS example_programs)

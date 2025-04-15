@@ -254,21 +254,45 @@ end module logging_facade
 module logging_multi_logger
    use logging_abstract, only: abstract_logger_t
 
+   implicit none(type, external)
+
+   private
+   public :: multi_logger_t
+
    type, extends(abstract_logger_t) :: multi_logger_t
       class(abstract_logger_t), pointer :: inner_logger
    contains
       procedure :: log => multi_logger_log
+      final :: multi_logger_destructor
    end type multi_logger_t
 
+   interface multi_logger_t
+      module procedure multi_logger_constructor
+   end interface
+
 contains
+
+   function multi_logger_constructor(inner_logger) result (new_logger)
+      class(abstract_logger_t), pointer, intent(in) :: inner_logger
+      type(multi_logger_t), pointer :: new_logger
+
+      allocate(new_logger)
+      new_logger%inner_logger => inner_logger
+   end function multi_logger_constructor
 
    subroutine multi_logger_log(self, message)
       class(multi_logger_t), intent(inout) :: self
       character(len=*), intent(in) :: message
 
       call self%inner_logger%log(message)
-
    end subroutine multi_logger_log
+
+   subroutine multi_logger_destructor(self)
+      type(multi_logger_t), intent(inout) :: self
+
+      print *, 'Destructing multi-logger'
+      deallocate(self%inner_logger)
+   end subroutine multi_logger_destructor
 
 end module logging_multi_logger
 
@@ -292,17 +316,15 @@ contains
       logical :: debug
       logical :: quiet
 
-      type(do_everything_logger_t), allocatable, target :: do_everything_logger
-      type(multi_logger_t), allocatable, target :: multi_logger
+      class(abstract_logger_t), pointer :: do_everything_logger
+      type(multi_logger_t), pointer :: multi_logger
 
       if (.not. associated(the_logger)) then
          debug = .not. has_cli_argument('--no-debug')
          quiet = has_cli_argument('--quiet')
 
-         allocate (do_everything_logger)
-         do_everything_logger = do_everything_logger_t(debug, quiet)
-         allocate (multi_logger)
-         multi_logger%inner_logger => do_everything_logger
+         do_everything_logger => do_everything_logger_t(debug, quiet)
+         multi_logger => multi_logger_t(do_everything_logger)
          the_logger => multi_logger
       end if
 
