@@ -34,7 +34,18 @@ set(example_programs
     oop/example_multi_logger_tryout.f90
     oop/example_wrapping_instances.f90
     oop/example_dt_pointers.f90
-   # oop/example_allocatable_array_copy.f90
+    # oop/example_allocatable_array_copy.f90
+    fp/example_map_filter_reduce_with_loops.f90
+    fp/example_filter_and_map.f90
+    fp/example_reduce.f90
+    fp/example_statistics.f90
+    fp/example_statistics_cleanup.f90
+    fp/example_curried_map.f90
+    fp/example_curry.f90
+    fp/example_generic_list_filter_and_map.f90
+    fp/example_generic_list_with_pointers.f90
+    fp/example_generic_list_reduce.f90
+    fp/example_optional_result.f90
 )
 
 foreach(program_file IN LISTS example_programs)

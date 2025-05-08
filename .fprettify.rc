@@ -1,2 +1,3 @@
 indent = 3
 case = [1, 1, 1, 1]
+whitespace = 3
