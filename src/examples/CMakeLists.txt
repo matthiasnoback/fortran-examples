@@ -46,6 +46,8 @@ set(example_programs
     fp/example_generic_list_with_pointers.f90
     fp/example_generic_list_reduce.f90
     fp/example_optional_result.f90
+    fp/example_recursive_reduction.f90
+    fp/example_parse_polyline.f90
 )
 
 foreach(program_file IN LISTS example_programs)
