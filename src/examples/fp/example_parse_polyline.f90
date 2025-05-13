@@ -210,7 +210,7 @@ contains
          point_or_error = parse_point(trim(lines(i)))
          if (allocated(point_or_error%error)) then
             polyline_or_error%error = &
-               error_t("Failed to parse polyline"//point_or_error%error%message)
+               error_t("Failed to parse polyline - "//point_or_error%error%message)
             return
          else
             polyline%points(i) = point_or_error%point
@@ -273,6 +273,12 @@ program example
    type(polygon_or_error_t) :: polygon_or_error
 
    polyline_or_error = parse_polyline(["1.0 2.0", "3.0 4.0", "5.0 6.0"])
+   print *, polyline_or_error
+
+   polyline_or_error = parse_polyline(["1.0 2.0", "a 4.0  ", "5.0    "])
+   print *, polyline_or_error
+
+   polyline_or_error = parse_polyline(["1.0 2.0", "3.0 4.0", "5.0 6.0"])
    polygon_or_error = polyline_or_error%map(to_polygon)
 
    print *, polygon_or_error
@@ -286,88 +292,3 @@ program example
 
    print *, polyline_or_error
 end program example
-
-! module parser_module
-!    implicit none
-
-!    type :: TwoReals
-!       real :: x, y
-!    end type TwoReals
-
-!    type :: ParseError
-!       character(len=:), allocatable :: message
-!    end type ParseError
-
-!    type :: ParseErrorOnLine
-!       type(ParseError) :: error
-!       integer :: line_number
-!    end type ParseErrorOnLine
-
-!    type :: Either
-!       class(*), allocatable :: value
-!    end type Either
-
-! contains
-
-!    function parse_string(input) result(output)
-!       character(len=*), intent(in) :: input
-!       type(Either) :: output
-!       real :: x, y
-!       integer :: ios
-
-!       read (input, *, iostat=ios) x, y
-!       if (ios == 0) then
-!          allocate (TwoReals :: output%value)
-!          output%value = TwoReals(x, y)
-!       else
-!          allocate (ParseError :: output%value)
-!          output%value = ParseError("Failed to parse input string")
-!       end if
-!    end function parse_string
-
-!    function parse_file(filename) result(output_list)
-!       character(len=*), intent(in) :: filename
-!       type(Either), allocatable :: output_list(:)
-!       character(len=256) :: line
-!       integer :: unit, ios, line_number
-!       type(Either) :: parsed_line
-!       integer :: count
-
-!       ! Open the file
-!       open (newunit=unit, file=filename, status='old', action='read', iostat=ios)
-!       if (ios /= 0) then
-!          allocate (output_list(1))
-!          allocate (ParseError :: output_list(1)%value)
-!          output_list(1)%value = ParseError("Failed to open file")
-!          return
-!       end if
-
-!       ! Count the number of lines in the file
-!       count = 0
-!       do
-!          read (unit, '(A)', iostat=ios) line
-!          if (ios /= 0) exit
-!          count = count + 1
-!       end do
-
-!       rewind (unit)
-!       allocate (output_list(count))
-
-!       ! Parse each line
-!       line_number = 0
-!       do
-!          read (unit, '(A)', iostat=ios) line
-!          if (ios /= 0) exit
-!          line_number = line_number + 1
-!          parsed_line = parse_string(trim(line))
-!          if (allocated(parsed_line%value)) then
-!             allocate (ParseErrorOnLine :: parsed_line%value)
-!             parsed_line%value = ParseErrorOnLine(ParseError(parsed_line%value%message), line_number)
-!          end if
-!          output_list(line_number) = parsed_line
-!       end do
-
-!       close (unit)
-!    end function parse_file
-
-! end module parser_module
