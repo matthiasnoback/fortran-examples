@@ -273,6 +273,7 @@ program example
    type(polygon_or_error_t) :: polygon_or_error
 
    polyline_or_error = parse_polyline(["1.0 2.0", "3.0 4.0", "5.0 6.0"])
+   point_t(1.0, 2.0)
    print *, polyline_or_error
 
    polyline_or_error = parse_polyline(["1.0 2.0", "a 4.0  ", "5.0    "])
@@ -292,3 +293,6 @@ program example
 
    print *, polyline_or_error
 end program example
+
+! Idea; factory point() that returns point_or_error_t if requested for transparency?
+

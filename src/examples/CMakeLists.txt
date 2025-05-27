@@ -48,6 +48,11 @@ set(example_programs
     fp/example_optional_result.f90
     fp/example_recursive_reduction.f90
     fp/example_parse_polyline.f90
+    fp/example_generalizing_a_traditional_sum.f90
+    fp/example_loop_without_index.f90
+    fp/example_string_list.f90
+    fp/example_guarantees.f90
+    fp/example_error_handling_options.f90
 )
 
 foreach(program_file IN LISTS example_programs)
