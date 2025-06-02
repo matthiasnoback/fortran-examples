@@ -53,6 +53,7 @@ set(example_programs
     fp/example_string_list.f90
     fp/example_guarantees.f90
     fp/example_error_handling_options.f90
+    fp/example_stream.f90
 )
 
 foreach(program_file IN LISTS example_programs)
