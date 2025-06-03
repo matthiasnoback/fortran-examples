@@ -3,8 +3,18 @@
     "configurePresets": [
         {
             "name": "ifx",
+            "generator": "Visual Studio 17 2022",
             "cacheVariables": {
                 "CMAKE_GENERATOR_TOOLSET": "fortran=ifx"
+            }
+        },
+        {
+            "name": "linux_make_ifx",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_Fortran_COMPILER": "ifx",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_Fortran_FLAGS": "-m64"
             }
         }
     ]
