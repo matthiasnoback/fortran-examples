@@ -177,6 +177,7 @@ end module stream
 
 program example
    use stream, only: integer_range_t, even_integers_t, odd_integers_t
+   use benchmark_facade, only: start_benchmark, stop_benchmark, print_benchmark_results
 
    implicit none(type, external)
 
@@ -184,11 +185,16 @@ program example
    type(even_integers_t), allocatable :: even_integers
    type(odd_integers_t), allocatable :: odd_integers
 
-   range = integer_range_t(1, 11)
-   even_integers = even_integers_t(integer_range_t(1, 11))
-   odd_integers = odd_integers_t(integer_range_t(1, 11))
+   integer :: max
 
-   print *, 'Numbers 1 to 11'
+   max = 10000
+
+   range = integer_range_t(1, max)
+   even_integers = even_integers_t(integer_range_t(1, max))
+   odd_integers = odd_integers_t(integer_range_t(1, max))
+
+   call start_benchmark('Range')
+   print *, 'Range'
    do
       call range%next()
       if (range%is_end_of_stream()) then
@@ -196,8 +202,10 @@ program example
       end if
       print *, range%current()
    end do
+   call stop_benchmark('Range')
 
    print *, 'Even numbers'
+   call start_benchmark('Even numbers')
    do
       call even_integers%next()
       if (even_integers%is_end_of_stream()) then
@@ -205,8 +213,10 @@ program example
       end if
       print *, even_integers%current()
    end do
+   call stop_benchmark('Even numbers')
 
    print *, 'Odd numbers'
+   call start_benchmark('Odd numbers')
    do
       call odd_integers%next()
       if (odd_integers%is_end_of_stream()) then
@@ -214,4 +224,7 @@ program example
       end if
       print *, odd_integers%current()
    end do
+   call stop_benchmark('Odd numbers')
+
+   call print_benchmark_results()
 end program example

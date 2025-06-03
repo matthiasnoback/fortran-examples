@@ -21,6 +21,10 @@ target_compile_options(compiler_warnings_as_errors INTERFACE
     "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<Fortran_COMPILER_ID:GNU>>:${gcc_warning_error_flag}>"
 )
 
+
+add_library("benchmark" STATIC "src/benchmark/diagnostics.f90" "src/benchmark/facade.f90" "src/common/to_string.f90")
+target_include_directories("benchmark" INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+
 add_subdirectory(src/common)
 
 add_subdirectory(src/hello_world)
