@@ -1,3 +1,4 @@
+
 set(example_programs
     oop/example_point_no_type.f90
     oop/example_point_type.f90
@@ -59,7 +60,9 @@ set(example_programs
 foreach(program_file IN LISTS example_programs)
     get_filename_component(program_name "${program_file}" NAME_WE)
     add_executable("${program_name}" "${program_file}")
+    install(TARGETS "${program_name}")
     target_link_libraries("${program_name}" PRIVATE
+        benchmark
         all_compiler_warnings
         compiler_warnings_as_errors
     )

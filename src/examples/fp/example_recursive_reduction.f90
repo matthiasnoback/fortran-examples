@@ -44,7 +44,7 @@ program example
    integer, dimension(:), allocatable :: numbers
    integer :: i
 
-   numbers = [(i, i=1, 100)]
+   numbers = [(i, i=1, 10000)]
 
    print *, 'Sum: ', reduce(sum, numbers, 0)
 
