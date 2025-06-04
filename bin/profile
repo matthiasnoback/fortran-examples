@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# This script runs well on Linux, with valgrind and massif-visualizer installed.
+
+set -eu
+
+app_name="${1}"
+
+executable=$(bin/fpm run ${app_name} --runner)
+
+file_suffix="${2-000}"
+file="massif.out.${file_suffix}"
+
+run="docker compose run --rm fpm"
+
+${run} valgrind --tool=massif --time-unit=B --massif-out-file="${file}" --stacks=yes -- "${executable}"
+${run} ms_print "${file}"

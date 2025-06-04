@@ -18,3 +18,7 @@ cmake-build-*
 # VSCode Modern Fortran extension
 *.i90
 *.mod
+
+# Valgrind
+massif.*
+massif.*.*

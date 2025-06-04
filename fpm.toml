@@ -1,0 +1,34 @@
+name = "fortran-examples"
+version = "0.1.0"
+license = "MIT"
+author = "Matthias Noback"
+maintainer = "Matthias.Noback@deltares.nl"
+copyright = "Copyright 2025, Matthias Noback"
+
+[build]
+auto-executables = true
+auto-tests = true
+auto-examples = true
+module-naming = false
+
+[install]
+library = false
+test = false
+
+[fortran]
+implicit-typing = false
+implicit-external = false
+source-form = "free"
+
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"
+test-drive.tag = "v0.4.0"
+
+[preprocess]
+# Preprocessing is needed for building the test-drive dependency
+cpp.suffixes = ["F90"]
+
+[extra.fortitude.check.per-file-ignores]
+# Ignore `C072` (character 'iomsg' has assumed size but does not have `intent(in)) because we can't fix it.
+# I tried using assumed length and make it allocated, as is suggested, but that doesn't compile.
+"src/common/to_string.f90" = ["C072"]
