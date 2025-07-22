@@ -3,6 +3,7 @@ program tester
    use testdrive, only: run_testsuite, new_testsuite, testsuite_type, &
            & select_suite, run_selected, get_argument
    use test_hello_world_module, only: collect_hello_world_module_tests
+   use test_pump, only: collect_pump_tests
    ! use test_tsunami, only: collect_tsunami_tests
    implicit none
    integer :: stat, is
@@ -13,7 +14,8 @@ program tester
    stat = 0
 
    testsuites = [ &
-                new_testsuite("hello_world_module", collect_hello_world_module_tests) &
+                new_testsuite("hello_world_module", collect_hello_world_module_tests), &
+                new_testsuite("pump", collect_pump_tests) &
                 !  new_testsuite("tsunami", collect_tsunami_tests) &
                 ]
 

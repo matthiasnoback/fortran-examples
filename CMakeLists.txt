@@ -27,10 +27,19 @@ target_include_directories("benchmark" INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
 add_subdirectory(src/common)
 
+
+add_library(pump-lib STATIC
+    src/pump/hydraulic_structure_pump.f90
+)
+
+# Allows main project to find .mod files for used modules
+target_include_directories(pump-lib INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+
 add_subdirectory(src/hello_world)
 add_executable(hello_world src/hello_world.f90)
 target_link_libraries(hello_world PRIVATE
     hello_world-lib
+    pump-lib
     common-lib
     all_compiler_warnings
     compiler_warnings_as_errors
@@ -166,6 +175,7 @@ endif ()
 set(
         tests
         "hello_world_module"
+        "pump"
 )
 set(
         test-srcs
@@ -183,6 +193,7 @@ add_executable(
 target_link_libraries(
         "hello-world-tester"
         PRIVATE
+        "pump-lib"
         "hello_world-lib"
         "test-drive::test-drive"
 )
