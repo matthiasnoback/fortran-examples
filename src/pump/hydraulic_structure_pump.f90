@@ -18,13 +18,47 @@ module hydraulic_structure_pump
       logical :: is_running
    end type pump_state_t
 
+   interface pump_specification_t
+      procedure :: create_pump_specification
+   end interface
+
    type :: pump_specification_t
       real(kind=dp) :: capacity
-      real(kind=dp) :: water_level_start
-      real(kind=dp) :: water_level_stop
+      real(kind=dp) :: control_suction_side_start_level
+      real(kind=dp) :: control_suction_side_stop_level
+      real(kind=dp) :: control_delivery_side_start_level
+      real(kind=dp) :: control_delivery_side_stop_level
+   contains
+      procedure :: configure_suction_side_control
+      procedure :: configure_delivery_side_control
    end type pump_specification_t
 
 contains
+
+   pure function create_pump_specification(capacity) result(specification)
+      real(kind=dp), intent(in) :: capacity
+      type(pump_specification_t) :: specification
+
+      specification%capacity = capacity
+   end function create_pump_specification
+
+   subroutine configure_suction_side_control(self, start_level, stop_level)
+      class(pump_specification_t), intent(inout) :: self
+      real(kind=dp), intent(in) :: start_level
+      real(kind=dp), intent(in) :: stop_level
+
+      self%control_suction_side_start_level = start_level
+      self%control_suction_side_stop_level = stop_level
+   end subroutine configure_suction_side_control
+
+   subroutine configure_delivery_side_control(self, start_level, stop_level)
+      class(pump_specification_t), intent(inout) :: self
+      real(kind=dp), intent(in) :: start_level
+      real(kind=dp), intent(in) :: stop_level
+
+      self%control_delivery_side_start_level = start_level
+      self%control_delivery_side_stop_level = stop_level
+   end subroutine configure_delivery_side_control
 
    pure function next_pump_state(pump_specification, previous_state, &
                                  water_level_at_suction_side, &
@@ -36,13 +70,13 @@ contains
       real(kind=dp), intent(in) :: water_level_at_delivery_side
       type(pump_state_t) :: next_state
 
-      if (water_level_at_suction_side >= pump_specification%water_level_start) then
+      if (water_level_at_suction_side >= pump_specification%control_suction_side_start_level) then
          next_state = running_at_capacity(pump_specification%capacity)
          return
       end if
 
       if (previous_state%is_running .and. &
-          water_level_at_suction_side >= pump_specification%water_level_stop) then
+          water_level_at_suction_side >= pump_specification%control_suction_side_stop_level) then
          next_state = running_at_capacity(pump_specification%capacity)
          return
       end if
