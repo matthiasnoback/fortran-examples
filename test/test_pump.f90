@@ -1,6 +1,7 @@
 module test_pump
    use testdrive, only: new_unittest, unittest_type, error_type, check, test_failed, skip_test
-   use hydraulic_structure_pump, only: next_pump_state, dp, pump_specification_t, pump_state_t
+   use hydraulic_structure_pump, only: next_pump_state, dp, pump_specification_t, pump_state_t, &
+                                       switched_off, running_at_capacity
 
    implicit none(type, external)
 
@@ -70,9 +71,10 @@ contains
       type(pump_specification_t) :: pump_specification
       type(pump_state_t) :: previous_state
 
-      pump_specification = pump_specification_t(0.0_dp, 0.0_dp, 0.0_dp)
+      pump_specification = pump_specification_t(0.0_dp, 1.0_dp, 0.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 0.0_dp), 0.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 0.0_dp, 0.0_dp), &
+                 switched_off())
    end subroutine test_discharge_of_a_pump_that_is_turned_off
 
    subroutine test_discharge_of_a_pump_that_is_always_on(error)
@@ -83,7 +85,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 0.0_dp, 0.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 0.0_dp), 10.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 0.0_dp, 0.0_dp), &
+                 running_at_capacity(10.0_dp))
    end subroutine test_discharge_of_a_pump_that_is_always_on
 
    subroutine test_water_level_suction_side_is_at_start_level(error)
@@ -95,7 +98,8 @@ contains
       pump%capacity = 10.0_dp
       pump%water_level_start = 2.0_dp
 
-      call check(error, next_pump_state(pump, previous_state, 2.0_dp), 10.0_dp)
+      call check(error, next_pump_state(pump, previous_state, 2.0_dp, 0.0_dp), &
+                 running_at_capacity(10.0_dp))
    end subroutine test_water_level_suction_side_is_at_start_level
 
    pure function pump_with_capacity(capacity) result(pump)
@@ -120,7 +124,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 2.0_dp, 0.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 1.0_dp), 0.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 1.0_dp, 0.0_dp), &
+                 switched_off())
    end subroutine test_water_level_suction_side_is_below_start_level
 
    subroutine test_water_level_suction_side_is_above_start_level(error)
@@ -131,7 +136,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 2.0_dp, 0.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 3.0_dp), 10.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 3.0_dp, 0.0_dp), &
+                 running_at_capacity(10.0_dp))
    end subroutine test_water_level_suction_side_is_above_start_level
 
    subroutine test_water_level_suction_side_is_at_stop_level(error)
@@ -142,7 +148,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 2.0_dp, 1.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 1.0_dp), 0.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 1.0_dp, 0.0_dp), &
+                 switched_off())
    end subroutine test_water_level_suction_side_is_at_stop_level
 
    subroutine test_water_level_suction_side_is_below_stop_level(error)
@@ -153,9 +160,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 2.0_dp, 1.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 0.5_dp), 0.0_dp)
-      call check(error, next_pump_state(pump_specification, previous_state, 0.5_dp), &
-                 pump_state_t(0.0_dp, .false.))
+      call check(error, next_pump_state(pump_specification, previous_state, 0.5_dp, 0.0_dp), &
+                 switched_off())
    end subroutine test_water_level_suction_side_is_below_stop_level
 
    subroutine test_water_level_suction_side_is_between_start_and_stop_level(error)
@@ -167,7 +173,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 2.0_dp, 1.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 1.5_dp), 10.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 1.5_dp, 0.0_dp), &
+                 running_at_capacity(10.0_dp))
    end subroutine test_water_level_suction_side_is_between_start_and_stop_level
 
    subroutine test_water_level_suction_side_is_above_stop_level(error)
@@ -178,7 +185,8 @@ contains
 
       pump_specification = pump_specification_t(10.0_dp, 2.0_dp, 1.0_dp)
 
-      call check(error, next_pump_state(pump_specification, previous_state, 2.0_dp), 10.0_dp)
+      call check(error, next_pump_state(pump_specification, previous_state, 2.0_dp, 0.0_dp), &
+                 running_at_capacity(10.0_dp))
    end subroutine test_water_level_suction_side_is_above_stop_level
 
 end module test_pump
